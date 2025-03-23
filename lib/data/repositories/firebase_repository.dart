@@ -26,4 +26,11 @@ class FirebaseRepository {
     final snapshot = await _firestore.collection('users/$userId/cagadas').get();
     return snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList();
   }
+  Stream<List<CagadaModel>> getCagadas(String userId) {
+    return _firestore.collection('users/$userId/cagadas').snapshots().map(
+          (snapshot) => snapshot.docs
+          .map((doc) => CagadaModel.fromJson(doc.data()))
+          .toList(),
+    );
+  }
 }

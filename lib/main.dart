@@ -1,6 +1,10 @@
+import 'package:caga_cash/views/nova_cagada_view.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'controllers/cagada_controller.dart';
+import 'controllers/settings_controller.dart';
+import 'core/routes.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -20,7 +24,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Salário Cagado',
       theme: ThemeData(primarySwatch: Colors.brown),
-      home: NovaCagadaView(),
+      initialRoute: Routes.initial,
+      routes: Routes.setRoute,
     );
   }
 }
