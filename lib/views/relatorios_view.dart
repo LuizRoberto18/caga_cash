@@ -7,9 +7,9 @@ class RelatoriosView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double totalGanho = controller.listaCagadas.fold(0, (sum, item) => sum + item.valor);
-    double totalPeso = controller.listaCagadas.fold(0, (sum, item) => sum + item.peso);
-    int entupimentos = controller.listaCagadas.where((c) => c.entupiu).length;
+    double totalGanho = controller.cagadas.fold(0, (sum, item) => sum + item.valor);
+    double totalPeso = controller.cagadas.fold(0, (sum, item) => sum + item.peso);
+    int entupimentos = controller.cagadas.where((c) => c.entupiu).length;
 
     return Scaffold(
       appBar: AppBar(title: Text("Relatórios Mensais")),

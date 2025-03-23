@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import 'cagada_controller.dart';
+
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -12,9 +14,17 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Verifica se há um usuário logado ao inicializar o controller
     _auth.authStateChanges().listen((User? user) {
       this.user.value = user;
+      if (user != null) {
+        print("Usuário logado: ${user.uid}");
+        Get.find<CagadaController>().cagadas.bindStream(
+              Get.find<CagadaController>().getCagadasStream(),
+            );
+      } else {
+        print("Nenhum usuário logado.");
+        Get.find<CagadaController>().limparDados();
+      }
     });
   }
 

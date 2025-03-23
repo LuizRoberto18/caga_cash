@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../views/auth_view.dart';
 import '../views/login_view.dart';
+import '../views/ranking_view.dart';
 import '../views/register_view.dart';
 
 class Routes {
@@ -13,9 +14,9 @@ class Routes {
     '/home': (context) => HomeView(),
     '/nova_cagada': (context) => NovaCagadaView(),
     '/register': (context) => RegisterScreen(),
-    // '/history': (context) => HistoryScreen(),
-    // '/ranking': (context) => RankingScreen(),
-    // '/reports': (context) => ReportsScreen(),
-    // '/settings': (context) => SettingsScreen(),
+    //'/history': (context) => HistoryView(),
+    //'/ranking': (context) => RankingView(),
+    //'/reports': (context) => ReportsView(),
+    //'/settings': (context) => SettingsView(),
   };
 }

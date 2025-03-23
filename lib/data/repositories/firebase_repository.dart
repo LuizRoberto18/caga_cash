@@ -19,18 +19,47 @@ class FirebaseRepository {
   }
 
   Future<void> salvarCagada(String userId, CagadaModel cagada) async {
-    await _firestore.collection('users/$userId/cagadas').doc(cagada.id).set(cagada.toJson());
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('cagadas')
+          .doc(cagada.id)
+          .set(cagada.toJson());
+      print("Cagada salva com sucesso no Firestore!");
+    } catch (e) {
+      print("Erro ao salvar cagada no Firestore: $e");
+      throw Exception("Erro ao salvar cagada: $e");
+    }
   }
 
+  // Método para buscar o histórico de cagadas
   Future<List<CagadaModel>> buscarHistorico(String userId) async {
-    final snapshot = await _firestore.collection('users/$userId/cagadas').get();
-    return snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList();
+    try {
+      final snapshot = await _firestore.collection('users').doc(userId).collection('cagadas').get();
+      return snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList();
+    } catch (e) {
+      print("Erro ao buscar histórico: $e");
+      throw Exception("Erro ao buscar histórico: $e");
+    }
   }
+
+  // Stream<List<CagadaModel>> getCagadas(String userId) {
+  //   return _firestore
+  //       .collection('users')
+  //       .doc(userId)
+  //       .collection('cagadas')
+  //       .snapshots()
+  //       .map((snapshot) => snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList());
+  // }
+  // Método para buscar o histórico de cagadas em tempo real
   Stream<List<CagadaModel>> getCagadas(String userId) {
-    return _firestore.collection('users/$userId/cagadas').snapshots().map(
-          (snapshot) => snapshot.docs
-          .map((doc) => CagadaModel.fromJson(doc.data()))
-          .toList(),
-    );
+    return _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('cagadas')
+        .orderBy('dataHora', descending: true) // Ordena por data (opcional)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList());
   }
 }
