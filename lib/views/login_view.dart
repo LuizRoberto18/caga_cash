@@ -5,7 +5,7 @@ import '../core/app_colors.dart';
 import '../core/widgets/custom_button.dart';
 import '../core/widgets/custom_text_form_field.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginView extends StatelessWidget {
   final AuthController _authController = Get.put(AuthController());
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

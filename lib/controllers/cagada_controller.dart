@@ -102,6 +102,11 @@ class CagadaController extends GetxController {
     }
   }
 
+  Stream<List<CagadaModel>> getCagadasPublicas() {
+    final userId = Get.find<AuthController>().user.value!.uid;
+    return _repository.getCagadasPublicas(userId);
+  }
+
   // Método para buscar o histórico de cagadas
   Future<void> buscarHistorico() async {
     try {
@@ -115,12 +120,12 @@ class CagadaController extends GetxController {
     }
   }
 
-
   // Stream para obter cagadas em tempo real
   Stream<List<CagadaModel>> getCagadasStream() {
     final userId = Get.find<AuthController>().user.value!.uid;
     return _repository.getCagadas(userId);
   }
+
   // Método para calcular o tempo total gasto
   int calculateTotalTime() {
     return cagadas.fold(0, (sum, cagada) => sum + cagada.duracaoMinutos);

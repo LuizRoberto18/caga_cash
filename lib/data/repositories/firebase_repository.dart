@@ -33,6 +33,16 @@ class FirebaseRepository {
     }
   }
 
+  Stream<List<CagadaModel>> getCagadasPublicas(String userId) {
+    return _firestore
+        .collectionGroup('cagadas') // Busca em todas as subcoleções 'cagadas'
+        .where('publica', isEqualTo: true) // Filtra apenas cagadas públicas
+        .where('id', isNotEqualTo: userId) // Exclui cagadas do usuário logado
+        .orderBy('dataHora', descending: true) // Ordena por data (opcional)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList());
+  }
+
   // Método para buscar o histórico de cagadas
   Future<List<CagadaModel>> buscarHistorico(String userId) async {
     try {
@@ -44,14 +54,6 @@ class FirebaseRepository {
     }
   }
 
-  // Stream<List<CagadaModel>> getCagadas(String userId) {
-  //   return _firestore
-  //       .collection('users')
-  //       .doc(userId)
-  //       .collection('cagadas')
-  //       .snapshots()
-  //       .map((snapshot) => snapshot.docs.map((doc) => CagadaModel.fromJson(doc.data())).toList());
-  // }
   // Método para buscar o histórico de cagadas em tempo real
   Stream<List<CagadaModel>> getCagadas(String userId) {
     return _firestore

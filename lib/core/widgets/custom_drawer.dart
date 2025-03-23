@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/cagada_controller.dart';
 import '../app_colors.dart';
 import '../app_text_styles.dart';
 
@@ -37,13 +38,15 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.history, color: AppColors.text),
             title: Text('Histórico', style: AppTextStyles.body),
             onTap: () {
-              Get.toNamed('/history');
+              Get.toNamed('/historico');
             },
           ),
           ListTile(
             leading: Icon(Icons.leaderboard, color: AppColors.text),
             title: Text('Ranking', style: AppTextStyles.body),
-            onTap: () {
+            onTap: () async {
+              final cagadaController = Get.find<CagadaController>();
+              await cagadaController.buscarHistorico(); // Garante que os dados estão carregados
               Get.toNamed('/ranking');
             },
           ),
@@ -51,7 +54,7 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.analytics, color: AppColors.text),
             title: Text('Relatórios', style: AppTextStyles.body),
             onTap: () {
-              Get.toNamed('/reports');
+              Get.toNamed('/relatorios');
             },
           ),
           ListTile(
