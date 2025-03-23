@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "254902397184",
+    "project_id": "cagacash",
+    "storage_bucket": "cagacash.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254902397184:android:4f2f85cb9f2bb45e89ebe5",
+        "android_client_info": {
+          "package_name": "com.luiz.caga_cash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7w2Tvl9s9fDcqpAv4RAsgsV78TkZgw2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
