@@ -34,7 +34,7 @@ class SettingsController extends GetxController {
     final user = _auth.currentUser;
     if (user != null) {
       nomeUsuario.value = user.displayName ?? '';
-      fotoPerfilUrl.value = user.photoURL ?? '';
+      fotoPerfilUrl.value = user.photoURL ?? 'assets/images/default-avatar.png';
       nomeController.text = nomeUsuario.value;
     }
   }

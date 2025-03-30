@@ -12,6 +12,7 @@ class AuthController extends GetxController {
 
   // Observável para armazenar o usuário logado
   var user = Rxn<User>();
+  Rx<bool> isLoading = false.obs;
 
   @override
   void onInit() {
@@ -33,28 +34,34 @@ class AuthController extends GetxController {
   // Método para login com email e senha
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     try {
+      isLoading.value = true;
       final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       user.value = userCredential.user;
       Get.offAllNamed('/home'); // Redireciona para a tela principal
+      isLoading.value = false;
     } catch (e) {
       Get.snackbar('Erro', 'Falha no login: ${e.toString()}');
+      isLoading.value = false;
     }
   }
 
   // Método para registro com email e senha
   Future<void> registerWithEmailAndPassword(String email, String password) async {
     try {
+      isLoading.value = true;
       final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       user.value = userCredential.user;
       Get.offAllNamed('/home'); // Redireciona para a tela principal
+      isLoading.value = false;
     } catch (e) {
       Get.snackbar('Erro', 'Falha no cadastro: ${e.toString()}');
+      isLoading.value = false;
     }
   }
 
@@ -102,7 +109,8 @@ class AuthController extends GetxController {
       print('Reiniciando Firebase...');
 
       // Fecha todas as instâncias
-      await Firebase.apps..forEach((app) => app.delete());
+      await Firebase.apps
+        ..forEach((app) => app.delete());
 
       // Re-inicializa
       await Firebase.initializeApp(

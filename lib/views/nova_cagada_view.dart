@@ -1,13 +1,14 @@
+import 'dart:typed_data';
+
+import 'package:caga_cash/core/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'dart:typed_data';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
 import '../controllers/cagada_controller.dart';
 import '../core/app_colors.dart';
 import '../core/app_text_styles.dart';
-import '../core/widgets/custom_button.dart';
-import '../core/widgets/custom_text_form_field.dart';
+import '../core/widgets/auth_text_field.dart';
 
 class NovaCagadaView extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nova Cagada', style: AppTextStyles.title),
+        title: Text('Nova Cagada', style: AppTextStyles.titleLarge),
         backgroundColor: AppColors.primary,
       ),
       body: SingleChildScrollView(
@@ -29,15 +30,19 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CustomTextField(
+            AuthTextField(
               controller: _cagadaController.salarioController,
-              label: 'Salário',
+              hint: '0.0',
+              icon: MdiIcons.cash,
               keyboardType: TextInputType.number,
+              label: 'Salário',
             ),
             SizedBox(height: 16),
-            CustomTextField(
+            AuthTextField(
               controller: _cagadaController.horasPorSemanaController,
               label: 'Horas por Semana',
+              hint: "44",
+              icon: MdiIcons.hours24,
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16),
@@ -60,9 +65,11 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
               ),
             ),
             SizedBox(height: 16),
-            CustomTextField(
+            AuthTextField(
               controller: _cagadaController.pesoController,
               label: 'Peso (opcional)',
+              hint: '1.0',
+              icon: MdiIcons.scaleBalance,
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16),
@@ -92,7 +99,7 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
               ),
             SizedBox(height: 16),
             SwitchListTile(
-              title: Text('Pública', style: AppTextStyles.body),
+              title: Text('Pública', style: AppTextStyles.bodyMedium),
               value: _cagadaController.isPublic,
               onChanged: (value) {
                 setState(() {
@@ -101,7 +108,7 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
               },
             ),
             SwitchListTile(
-              title: Text('Entupiu o vaso?', style: AppTextStyles.body),
+              title: Text('Entupiu o vaso?', style: AppTextStyles.bodyMedium),
               value: _cagadaController.cloggedToilet,
               onChanged: (value) {
                 setState(() {
@@ -129,7 +136,7 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
               onTap: () => _selectTime(context, false),
             ),
             SizedBox(height: 24),
-            CustomButton(
+            GradientButton(
               text: 'Registrar Cagada',
               onPressed: _submit,
             ),
@@ -283,19 +290,20 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Cagada Registrada!', style: AppTextStyles.title),
+          title: Text('Cagada Registrada!', style: AppTextStyles.titleLarge),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Você ganhou:', style: AppTextStyles.body),
-              Text('R\$ ${valor.toStringAsFixed(2)}', style: AppTextStyles.title),
+              Text('Você ganhou:', style: AppTextStyles.bodyMedium),
+              Text('R\$ ${valor.toStringAsFixed(2)}', style: AppTextStyles.titleLarge),
               SizedBox(height: 16),
-              Text('Duração: $duracaoMinutos minutos', style: AppTextStyles.body),
+              Text('Duração: $duracaoMinutos minutos', style: AppTextStyles.bodyMedium),
               Text('Data: ${diaCagada.toLocal().toString().split(' ')[0]}',
-                  style: AppTextStyles.body),
-              Text('Hora de Início: ${horaInicio.format(context)}', style: AppTextStyles.body),
-              Text('Hora de Fim: ${horaFim.format(context)}', style: AppTextStyles.body),
+                  style: AppTextStyles.bodyMedium),
+              Text('Hora de Início: ${horaInicio.format(context)}',
+                  style: AppTextStyles.bodyMedium),
+              Text('Hora de Fim: ${horaFim.format(context)}', style: AppTextStyles.bodyMedium),
             ],
           ),
           actions: [

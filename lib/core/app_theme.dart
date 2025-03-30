@@ -9,11 +9,11 @@ class AppThemes {
     scaffoldBackgroundColor: AppColors.secondary,
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.primary,
-      titleTextStyle: AppTextStyles.title,
+      titleTextStyle: AppTextStyles.titleLarge,
     ),
     textTheme: TextTheme(
-      bodyLarge: AppTextStyles.body,
-      bodyMedium: AppTextStyles.body,
+      bodyLarge: AppTextStyles.bodyLarge,
+      bodyMedium: AppTextStyles.bodyMedium,
     ),
   );
 }

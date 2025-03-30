@@ -24,26 +24,26 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 Text(
                   'Cagada App',
-                  style: AppTextStyles.title.copyWith(color: Colors.white),
+                  style: AppTextStyles.titleLarge.copyWith(color: Colors.white),
                 ),
                 SizedBox(height: 8),
                 Text(
                   'Bem-vindo, ${_authController.userEmail ?? 'Usuário'}',
-                  style: AppTextStyles.body.copyWith(color: Colors.white),
+                  style: AppTextStyles.bodyLarge.copyWith(color: Colors.white),
                 ),
               ],
             ),
           ),
           ListTile(
             leading: Icon(Icons.history, color: AppColors.text),
-            title: Text('Histórico', style: AppTextStyles.body),
+            title: Text('Histórico', style: AppTextStyles.bodyMedium),
             onTap: () {
               Get.toNamed('/historico');
             },
           ),
           ListTile(
             leading: Icon(Icons.leaderboard, color: AppColors.text),
-            title: Text('Ranking', style: AppTextStyles.body),
+            title: Text('Ranking', style: AppTextStyles.bodyMedium),
             onTap: () async {
               final cagadaController = Get.find<CagadaController>();
               await cagadaController.buscarHistorico(); // Garante que os dados estão carregados
@@ -52,14 +52,14 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.analytics, color: AppColors.text),
-            title: Text('Relatórios', style: AppTextStyles.body),
+            title: Text('Relatórios', style: AppTextStyles.bodyMedium),
             onTap: () {
               Get.toNamed('/relatorios');
             },
           ),
           ListTile(
             leading: Icon(Icons.settings, color: AppColors.text),
-            title: Text('Configurações', style: AppTextStyles.body),
+            title: Text('Configurações', style: AppTextStyles.bodyMedium),
             onTap: () {
               Get.toNamed('/settings');
             },
@@ -67,7 +67,7 @@ class CustomDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.logout, color: AppColors.text),
-            title: Text('Sair', style: AppTextStyles.body),
+            title: Text('Sair', style: AppTextStyles.bodyMedium),
             onTap: () async {
               await _authController.logout();
             },

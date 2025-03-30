@@ -58,7 +58,7 @@ class RelatoriosView extends StatelessWidget {
         value: cagadasPublicas.toDouble(),
         title: '${((cagadasPublicas / controller.cagadas.length) * 100).toStringAsFixed(1)}%',
         radius: 60,
-        titleStyle: AppTextStyles.body.copyWith(color: Colors.white),
+        titleStyle: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
       ),
       PieChartSectionData(
         color: AppColors.secondary,
@@ -85,7 +85,7 @@ class RelatoriosView extends StatelessWidget {
                   ),
                   Text(
                     "Privada",
-                    style: AppTextStyles.body.copyWith(color: Colors.black),
+                    style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
                   ),
                 ],
               ),
@@ -100,20 +100,21 @@ class RelatoriosView extends StatelessWidget {
                   ),
                   Text(
                     "Publica",
-                    style: AppTextStyles.body.copyWith(color: Colors.black),
+                    style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
                   ),
                 ],
               ),
             ],
           ),
         ),
-        titleStyle: AppTextStyles.body.copyWith(color: Colors.white),
+        titleStyle: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
       ),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Relatórios Mensais", style: AppTextStyles.title.copyWith(color: Colors.white)),
+        title: Text("Relatórios Mensais",
+            style: AppTextStyles.titleLarge.copyWith(color: Colors.white)),
         backgroundColor: AppColors.primary,
       ),
       body: Padding(
@@ -125,9 +126,9 @@ class RelatoriosView extends StatelessWidget {
               elevation: 4,
               color: AppColors.secondary,
               child: ListTile(
-                title: Text("Total Ganho no Mês", style: AppTextStyles.title),
+                title: Text("Total Ganho no Mês", style: AppTextStyles.titleLarge),
                 subtitle: Text("R\$ ${totalGanho.toStringAsFixed(2)}",
-                    style: AppTextStyles.title.copyWith(color: AppColors.accent)),
+                    style: AppTextStyles.titleLarge.copyWith(color: AppColors.accent)),
                 leading: Icon(Icons.attach_money, color: AppColors.accent),
               ),
             ),
@@ -138,9 +139,9 @@ class RelatoriosView extends StatelessWidget {
               elevation: 4,
               color: AppColors.secondary,
               child: ListTile(
-                title: Text("Peso Acumulado", style: AppTextStyles.title),
+                title: Text("Peso Acumulado", style: AppTextStyles.titleLarge),
                 subtitle: Text("${totalPeso.toStringAsFixed(2)} kg",
-                    style: AppTextStyles.title.copyWith(color: AppColors.accent)),
+                    style: AppTextStyles.titleLarge.copyWith(color: AppColors.accent)),
                 leading: Icon(Icons.fitness_center, color: AppColors.accent),
               ),
             ),
@@ -151,16 +152,16 @@ class RelatoriosView extends StatelessWidget {
               elevation: 4,
               color: AppColors.secondary,
               child: ListTile(
-                title: Text("Entupimentos", style: AppTextStyles.title),
+                title: Text("Entupimentos", style: AppTextStyles.titleLarge),
                 subtitle: Text("$entupimentos vezes",
-                    style: AppTextStyles.title.copyWith(color: AppColors.accent)),
+                    style: AppTextStyles.titleLarge.copyWith(color: AppColors.accent)),
                 leading: Icon(Icons.warning, color: AppColors.accent),
               ),
             ),
             SizedBox(height: 24),
 
             // Gráfico de pizza (cagadas públicas vs privadas)
-            Text("Cagadas Públicas vs Privadas", style: AppTextStyles.title),
+            Text("Cagadas Públicas vs Privadas", style: AppTextStyles.titleLarge),
             SizedBox(height: 16),
             SizedBox(
               height: 260,
@@ -173,7 +174,7 @@ class RelatoriosView extends StatelessWidget {
             ),
 
             // Gráfico de barras (ganho por dia no mês)
-            Text("Ganho por Dia no Mês", style: AppTextStyles.title),
+            Text("Ganho por Dia no Mês", style: AppTextStyles.titleLarge),
             SizedBox(height: 16),
             Container(
               height: 300,
@@ -206,7 +207,7 @@ class RelatoriosView extends StatelessWidget {
                           return dia >= 1 && dia <= ultimoDiaDoMes.day
                               ? Text(
                                   '$dia',
-                                  style: AppTextStyles.body.copyWith(color: AppColors.text),
+                                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.text),
                                 )
                               : const SizedBox.shrink();
                         },
@@ -218,7 +219,7 @@ class RelatoriosView extends StatelessWidget {
                         getTitlesWidget: (value, meta) {
                           return Text(
                             'R\$ ${value.toInt()}',
-                            style: AppTextStyles.body.copyWith(color: AppColors.text),
+                            style: AppTextStyles.bodyMedium.copyWith(color: AppColors.text),
                           );
                         },
                         interval: 50, // Ajuste do intervalo de valores no eixo Y
@@ -234,7 +235,7 @@ class RelatoriosView extends StatelessWidget {
                         final dia = group.x.toInt();
                         return BarTooltipItem(
                           'Dia $dia\nR\$ ${rod.toY.toStringAsFixed(2)}',
-                          AppTextStyles.body.copyWith(color: Colors.white),
+                          AppTextStyles.bodyMedium.copyWith(color: Colors.white),
                         );
                       },
                     ),
