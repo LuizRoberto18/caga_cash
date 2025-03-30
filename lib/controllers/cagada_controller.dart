@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart'; // Adicione esta linha
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class CagadaController extends GetxController {
   DateTime diaCagada = DateTime.now(); // Padrão: dia atual
   TimeOfDay horaInicio = TimeOfDay.now(); // Padrão: hora atual
   TimeOfDay horaFim = TimeOfDay.now(); // Padrão: hora atual
+  Worker? _streamWorker;
 
   var cagadas = <CagadaModel>[].obs;
 
@@ -28,7 +30,7 @@ class CagadaController extends GetxController {
   }
 
   // Método para adicionar uma nova cagada
-  Future addCagada({
+  Future<Map<String, dynamic>?> addCagada({
     required double salario,
     required int horasPorSemana,
     required int duracaoMinutos,
@@ -43,31 +45,43 @@ class CagadaController extends GetxController {
     required TimeOfDay horaFim,
   }) async {
     try {
-      String? imageUrl;
-      if (imagem != null) {
-        // Obtém o diretório temporário do dispositivo
-        final diretorioTemporario = await getTemporaryDirectory();
-        final caminhoArquivo =
-            '${diretorioTemporario.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      // String? imageUrl;
 
-        print("Caminho do arquivo temporário: $caminhoArquivo");
+      // // Processa a imagem primeiro (se existir)
+      // if (imagem != null && imagem.isNotEmpty) {
+      //   try {
+      //     final tempDir = await getTemporaryDirectory();
+      //     final tempFile = File('${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      //     // Verifica se os bytes são válidos
+      //     if (imagem.isEmpty) {
+      //       throw Exception("Bytes da imagem estão vazios");
+      //     }
+      //
+      //     await tempFile.writeAsBytes(imagem);
+      //
+      //     // Verifica novamente se o arquivo foi criado
+      //     if (!await tempFile.exists()) {
+      //       throw Exception("Falha ao criar arquivo temporário");
+      //     }
+      //
+      //     imageUrl =
+      //         await _repository.uploadImagem(tempFile, Get.find<AuthController>().user.value!.uid);
+      //
+      //     // 4. Só então salve os dados
+      //
+      //     // Limpa o arquivo temporário
+      //     await tempFile.delete();
+      //   } on FirebaseException catch (e) {
+      //     print("ERRO ESPECÍFICO: ${e.code}");
+      //     print("Falha no processamento da imagem: $e");
+      //     Get.snackbar('Aviso', 'A imagem não pôde ser enviada, mas a cagada será registrada');
+      //   }
+      // }
 
-        // Cria o arquivo temporário
-        final tempFile = File(caminhoArquivo);
-        await tempFile.writeAsBytes(imagem);
-
-        // Faz upload da imagem para o Firebase Storage
-        imageUrl =
-            await _repository.uploadImagem(tempFile, Get.find<AuthController>().user.value!.uid);
-        print("Imagem enviada com sucesso. URL: $imageUrl");
-
-        // Remove o arquivo temporário após o upload
-        await tempFile.delete();
-        print("Arquivo temporário excluído.");
-      }
-
+      // Cria o modelo com ou sem imagem
       final cagada = CagadaModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
+        usuarioId: Get.find<AuthController>().user.value!.uid,
         usuarioNome: Get.find<AuthController>().user.value!.email ?? 'Usuário',
         dataHora: DateTime.now(),
         duracaoMinutos: duracaoMinutos,
@@ -75,7 +89,8 @@ class CagadaController extends GetxController {
         entupiu: entupiu,
         publica: publica,
         valor: valor,
-        imagemUrl: imageUrl,
+        //imagemUrl: imageUrl,
+        // Pode ser nulo
         salario: salario,
         horasPorSemana: horasPorSemana,
         periodoPagamento: periodoPagamento,
@@ -84,27 +99,32 @@ class CagadaController extends GetxController {
         horaFim: horaFim,
       );
 
-      print("Enviando cagada para o Firestore: ${cagada.toJson()}");
+      // Salva no Firestore
       await _repository.salvarCagada(Get.find<AuthController>().user.value!.uid, cagada);
       cagadas.add(cagada);
 
-      // Retorna o resumo da cagada para exibir no pop-up
       return {
         'valor': valor,
         'duracaoMinutos': duracaoMinutos,
         'diaCagada': diaCagada,
         'horaInicio': horaInicio,
         'horaFim': horaFim,
+        //'imagemUrl': imageUrl, // Adiciona a URL ao retorno
       };
     } catch (e) {
-      print("Erro ao registrar cagada: $e");
+      print("Erro completo no registro: $e");
       Get.snackbar('Erro', 'Falha ao registrar cagada: ${e.toString()}');
+      rethrow;
     }
   }
 
-  Stream<List<CagadaModel>> getCagadasPublicas() {
+  Stream<List<CagadaModel>> getCagadasParaRanking() {
     final userId = Get.find<AuthController>().user.value!.uid;
-    return _repository.getCagadasPublicas(userId);
+    return _repository.getCagadasParaRanking(userId);
+  }
+
+  Stream<List<CagadaModel>> getTodasCagadasPublicas() {
+    return _repository.getCagadasPublicas();
   }
 
   // Método para buscar o histórico de cagadas
@@ -153,7 +173,5 @@ class CagadaController extends GetxController {
     diaCagada = DateTime.now();
     horaInicio = TimeOfDay.now();
     horaFim = TimeOfDay.now();
-    // setState(() {
-    // });
   }
 }

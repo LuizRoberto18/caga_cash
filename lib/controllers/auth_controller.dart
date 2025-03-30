@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../firebase_options.dart';
 import 'cagada_controller.dart';
 
 class AuthController extends GetxController {
@@ -78,12 +80,39 @@ class AuthController extends GetxController {
   // Método para logout
   Future<void> logout() async {
     try {
+      // 1. Pare todas as consultas ativas primeiro
+      Get.find<CagadaController>().limparDados();
+
+      // 2. Faça o logout dos serviços
       await _auth.signOut();
       await _googleSignIn.signOut();
+
+      // 3. Atualize o estado
       user.value = null;
-      Get.offAllNamed('/'); // Redireciona para a tela de login
+
+      // 4. Redirecione limpando toda a pilha de navegação
+      Get.offAllNamed('/');
     } catch (e) {
       Get.snackbar('Erro', 'Falha no logout: ${e.toString()}');
+    }
+  }
+
+  Future<void> reiniciarFirebase() async {
+    try {
+      print('Reiniciando Firebase...');
+
+      // Fecha todas as instâncias
+      await Firebase.apps..forEach((app) => app.delete());
+
+      // Re-inicializa
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
+      print('✅ Firebase reiniciado com sucesso');
+    } catch (e) {
+      print('❌ Falha ao reiniciar Firebase: $e');
+      throw Exception('Reinicialização falhou: $e');
     }
   }
 

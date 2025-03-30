@@ -1,4 +1,5 @@
 import 'package:caga_cash/controllers/auth_controller.dart';
+import 'package:caga_cash/views/configuracoes_view.dart';
 import 'package:caga_cash/views/historic_view.dart';
 import 'package:caga_cash/views/nova_cagada_view.dart';
 import 'package:caga_cash/views/ranking_view.dart';
@@ -10,7 +11,6 @@ import 'package:get/get.dart';
 import 'controllers/auth_middleware.dart';
 import 'controllers/cagada_controller.dart';
 import 'controllers/settings_controller.dart';
-import 'core/routes.dart';
 import 'firebase_options.dart';
 import 'views/home_view.dart';
 import 'views/login_view.dart';
@@ -67,6 +67,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/ranking',
           page: () => RankingView(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/settings',
+          page: () => ConfiguracoesView(),
           middlewares: [AuthMiddleware()],
         ),
       ],

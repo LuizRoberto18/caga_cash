@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CagadaModel {
   String id;
+  String usuarioId;
   String usuarioNome;
   DateTime dataHora;
   int duracaoMinutos;
@@ -33,10 +34,12 @@ class CagadaModel {
     required this.diaCagada,
     required this.horaInicio,
     required this.horaFim,
+    required this.usuarioId,
   });
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'usuarioId': usuarioId,
         'usuarioNome': usuarioNome,
         'dataHora': dataHora.toIso8601String(),
         'duracaoMinutos': duracaoMinutos,
@@ -55,6 +58,7 @@ class CagadaModel {
 
   factory CagadaModel.fromJson(Map<String, dynamic> json) => CagadaModel(
         id: json['id'],
+        usuarioId: json['usuarioId'] ?? "",
         usuarioNome: json['usuarioNome'],
         dataHora: DateTime.parse(json['dataHora']),
         duracaoMinutos: json['duracaoMinutos'],

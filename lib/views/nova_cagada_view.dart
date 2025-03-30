@@ -17,15 +17,137 @@ class NovaCagadaView extends StatefulWidget {
 class _NovaCagadaViewState extends State<NovaCagadaView> {
   final CagadaController _cagadaController = Get.find();
 
-  // Método para selecionar imagem da câmera ou galeria
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _cagadaController.imagem = File(pickedFile.path);
-      });
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nova Cagada', style: AppTextStyles.title),
+        backgroundColor: AppColors.primary,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CustomTextField(
+              controller: _cagadaController.salarioController,
+              label: 'Salário',
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 16),
+            CustomTextField(
+              controller: _cagadaController.horasPorSemanaController,
+              label: 'Horas por Semana',
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: _cagadaController.periodoPagamento,
+              items: ['mensal', 'quinzenal'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _cagadaController.periodoPagamento = value!;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Período de Pagamento',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+            CustomTextField(
+              controller: _cagadaController.pesoController,
+              label: 'Peso (opcional)',
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 16),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: CustomButton(
+            //         text: 'Tirar Foto',
+            //         onPressed: () => _pickImage(ImageSource.camera),
+            //       ),
+            //     ),
+            //     SizedBox(width: 16),
+            //     Expanded(
+            //       child: CustomButton(
+            //         text: 'Escolher da Galeria',
+            //         onPressed: () => _pickImage(ImageSource.gallery),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // SizedBox(height: 16),
+            if (_cagadaController.imagem != null)
+              Image.file(
+                _cagadaController.imagem!,
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+            SizedBox(height: 16),
+            SwitchListTile(
+              title: Text('Pública', style: AppTextStyles.body),
+              value: _cagadaController.isPublic,
+              onChanged: (value) {
+                setState(() {
+                  _cagadaController.isPublic = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Entupiu o vaso?', style: AppTextStyles.body),
+              value: _cagadaController.cloggedToilet,
+              onChanged: (value) {
+                setState(() {
+                  _cagadaController.cloggedToilet = value;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            ListTile(
+              title: Text(
+                  'Dia da Cagada: ${_cagadaController.diaCagada.toLocal().toString().split(' ')[0]}'),
+              trailing: Icon(Icons.calendar_today),
+              onTap: () => _selectDate(context),
+            ),
+            SizedBox(height: 16),
+            ListTile(
+              title: Text('Hora de Início: ${_cagadaController.horaInicio.format(context)}'),
+              trailing: Icon(Icons.access_time),
+              onTap: () => _selectTime(context, true),
+            ),
+            SizedBox(height: 16),
+            ListTile(
+              title: Text('Hora de Fim: ${_cagadaController.horaFim.format(context)}'),
+              trailing: Icon(Icons.access_time),
+              onTap: () => _selectTime(context, false),
+            ),
+            SizedBox(height: 24),
+            CustomButton(
+              text: 'Registrar Cagada',
+              onPressed: _submit,
+            ),
+          ],
+        ),
+      ),
+    );
   }
+
+  // // Método para selecionar imagem da câmera ou galeria
+  // Future<void> _pickImage(ImageSource source) async {
+  //   final pickedFile = await ImagePicker().pickImage(source: source);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _cagadaController.imagem = File(pickedFile.path);
+  //     });
+  //   }
+  // }
 
   // Método para calcular a duração em minutos
   int _calcularDuracao() {
@@ -79,16 +201,17 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
     }
 
     try {
-      // Converte a imagem para Uint8List
+      // Mostra loading
+      Get.dialog(Center(child: CircularProgressIndicator()), barrierDismissible: false);
+
       Uint8List? imageBytes;
       if (_cagadaController.imagem != null) {
         imageBytes = await _cagadaController.imagem!.readAsBytes();
+        print("Imagem convertida para bytes: ${imageBytes.lengthInBytes} bytes");
       }
 
-      // Calcula o valor ganho
       final valor = _calcularValor();
 
-      // Envia os dados para o controller
       final resumo = await _cagadaController.addCagada(
         salario: double.parse(_cagadaController.salarioController.text),
         horasPorSemana: int.parse(_cagadaController.horasPorSemanaController.text),
@@ -106,15 +229,17 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
         horaFim: _cagadaController.horaFim,
       );
 
-      // Exibe o pop-up de resumo
+      Get.back(); // Fecha o loading
+
       _exibirResumo(
-        resumo['valor'],
-        resumo['duracaoMinutos'],
-        resumo['diaCagada'],
-        resumo['horaInicio'],
-        resumo['horaFim'],
+        resumo?['valor'],
+        resumo?['duracaoMinutos'],
+        resumo?['diaCagada'],
+        resumo?['horaInicio'],
+        resumo?['horaFim'],
       );
     } catch (e) {
+      Get.back(); // Fecha o loading em caso de erro
       Get.snackbar('Erro', 'Falha ao registrar cagada: ${e.toString()}');
     }
   }
@@ -186,128 +311,6 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Nova Cagada', style: AppTextStyles.title),
-        backgroundColor: AppColors.primary,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CustomTextField(
-              controller: _cagadaController.salarioController,
-              label: 'Salário',
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 16),
-            CustomTextField(
-              controller: _cagadaController.horasPorSemanaController,
-              label: 'Horas por Semana',
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _cagadaController.periodoPagamento,
-              items: ['mensal', 'quinzenal'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _cagadaController.periodoPagamento = value!;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Período de Pagamento',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
-            CustomTextField(
-              controller: _cagadaController.pesoController,
-              label: 'Peso (opcional)',
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    text: 'Tirar Foto',
-                    onPressed: () => _pickImage(ImageSource.camera),
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: CustomButton(
-                    text: 'Escolher da Galeria',
-                    onPressed: () => _pickImage(ImageSource.gallery),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            if (_cagadaController.imagem != null)
-              Image.file(
-                _cagadaController.imagem!,
-                height: 150,
-                fit: BoxFit.cover,
-              ),
-            SizedBox(height: 16),
-            SwitchListTile(
-              title: Text('Pública', style: AppTextStyles.body),
-              value: _cagadaController.isPublic,
-              onChanged: (value) {
-                setState(() {
-                  _cagadaController.isPublic = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: Text('Entupiu o vaso?', style: AppTextStyles.body),
-              value: _cagadaController.cloggedToilet,
-              onChanged: (value) {
-                setState(() {
-                  _cagadaController.cloggedToilet = value;
-                });
-              },
-            ),
-            SizedBox(height: 16),
-            ListTile(
-              title: Text(
-                  'Dia da Cagada: ${_cagadaController.diaCagada.toLocal().toString().split(' ')[0]}'),
-              trailing: Icon(Icons.calendar_today),
-              onTap: () => _selectDate(context),
-            ),
-            SizedBox(height: 16),
-            ListTile(
-              title: Text('Hora de Início: ${_cagadaController.horaInicio.format(context)}'),
-              trailing: Icon(Icons.access_time),
-              onTap: () => _selectTime(context, true),
-            ),
-            SizedBox(height: 16),
-            ListTile(
-              title: Text('Hora de Fim: ${_cagadaController.horaFim.format(context)}'),
-              trailing: Icon(Icons.access_time),
-              onTap: () => _selectTime(context, false),
-            ),
-            SizedBox(height: 24),
-            CustomButton(
-              text: 'Registrar Cagada',
-              onPressed: _submit,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
