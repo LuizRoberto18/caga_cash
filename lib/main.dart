@@ -1,4 +1,5 @@
 import 'package:caga_cash/controllers/auth_controller.dart';
+import 'package:caga_cash/core/widgets/main_wrapper.dart';
 import 'package:caga_cash/views/configuracoes_view.dart';
 import 'package:caga_cash/views/historic_view.dart';
 import 'package:caga_cash/views/nova_cagada_view.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/home',
-          page: () => HomeView(),
+          page: () => MainWrapper(),
           middlewares: [AuthMiddleware()],
         ),
         GetPage(

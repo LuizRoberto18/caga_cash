@@ -27,6 +27,19 @@ class RankingView extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: // Botão flutuante alternativo (opcional)
+          Padding(
+        padding: const EdgeInsets.all(14),
+        child: FloatingActionButton(
+          isExtended: true,
+          onPressed: () => Get.toNamed('/nova_cagada'),
+          backgroundColor: AppColors.text,
+          child: Icon(
+            Icons.add,
+            color: AppColors.background,
+          ),
+        ),
+      ),
       body: StreamBuilder<List<CagadaModel>>(
         stream: _controller.getTodasCagadasPublicas(),
         builder: (context, snapshot) {

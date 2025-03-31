@@ -13,6 +13,7 @@ class AuthController extends GetxController {
   // Observável para armazenar o usuário logado
   var user = Rxn<User>();
   Rx<bool> isLoading = false.obs;
+  var currentTab = 0.obs;
 
   @override
   void onInit() {
@@ -29,6 +30,10 @@ class AuthController extends GetxController {
         Get.find<CagadaController>().limparDados();
       }
     });
+  }
+
+  void changeTab(int index) {
+    currentTab.value = index;
   }
 
   // Método para login com email e senha

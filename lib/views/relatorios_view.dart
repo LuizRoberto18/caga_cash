@@ -41,23 +41,40 @@ class RelatoriosView extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Cards de resumo
-            _buildSummaryCards(totalGanho, totalPeso, entupimentos),
-            const SizedBox(height: 24),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Cards de resumo
+                _buildSummaryCards(totalGanho, totalPeso, entupimentos),
+                const SizedBox(height: 24),
 
-            // Gráfico de pizza
-            _buildPieChartSection(pieChartSections, cagadasPublicas, cagadasPrivadas),
-            const SizedBox(height: 24),
+                // Gráfico de pizza
+                _buildPieChartSection(pieChartSections, cagadasPublicas, cagadasPrivadas),
+                const SizedBox(height: 24),
 
-            // Gráfico de barras
-            _buildBarChartSection(barGroups, ultimoDiaDoMes),
-          ],
-        ),
+                // Gráfico de barras
+                _buildBarChartSection(barGroups, ultimoDiaDoMes),
+              ],
+            ),
+          ),
+          // Botão flutuante alternativo (opcional)
+          Positioned(
+            bottom: 30,
+            right: 30,
+            child: FloatingActionButton(
+              onPressed: () => Get.toNamed('/nova_cagada'),
+              backgroundColor: AppColors.text,
+              child: Icon(
+                Icons.add,
+                color: AppColors.background,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

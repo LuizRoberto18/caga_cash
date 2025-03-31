@@ -28,40 +28,54 @@ class HistoricoView extends StatelessWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await controller.buscarHistorico();
-        },
-        child: Obx(() {
-          // if (controller.carregando.value) {
-          //   return Center(
-          //     child: CircularProgressIndicator(
-          //       valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-          //     ),
-          //   );
-          // }
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: () async {
+              await controller.buscarHistorico();
+            },
+            child: Obx(() {
+              // if (controller.carregando.value) {
+              //   return Center(
+              //     child: CircularProgressIndicator(
+              //       valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              //     ),
+              //   );
+              // }
 
-          if (controller.cagadas.isEmpty) {
-            return _buildEmptyState();
-          }
+              if (controller.cagadas.isEmpty) {
+                return _buildEmptyState();
+              }
 
-          return CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final cagada = controller.cagadas[index];
-                      return _buildCagadaCard(cagada);
-                    },
-                    childCount: controller.cagadas.length,
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final cagada = controller.cagadas[index];
+                          return _buildCagadaCard(cagada);
+                        },
+                        childCount: controller.cagadas.length,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
-          );
-        }),
+                ],
+              );
+            }),
+          ),
+          // Botão flutuante alternativo (opcional)
+          Positioned(
+            bottom: 30,
+            right: 30,
+            child: FloatingActionButton(
+              onPressed: () => Get.toNamed('/nova_cagada'),
+              backgroundColor: AppColors.text,
+              child: Icon(Icons.add, color: AppColors.background,),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -92,7 +92,8 @@ class ConfiguracoesView extends StatelessWidget {
               alignment: Alignment.bottomRight,
               children: [
                 ProfileAvatar(
-                  imageUrl: controller.fotoPerfilUrl.value,
+                  imageUrl:
+                      authController.user.value?.photoURL ?? 'assets/images/default-avatar.png',
                   size: 100,
                   onTap: controller.atualizarFotoPerfil,
                 ),

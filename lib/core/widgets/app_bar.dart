@@ -35,13 +35,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       centerTitle: true,
-      leading: leading ??
-          (showBackButton
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.text),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null),
+      // leading: leading ??
+      //     (showBackButton
+      //         ? IconButton(
+      //             icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.text),
+      //             onPressed: () => Navigator.of(context).pop(),
+      //           )
+      //         : null),
       actions: actions,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

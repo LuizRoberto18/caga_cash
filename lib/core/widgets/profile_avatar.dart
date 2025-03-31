@@ -31,10 +31,11 @@ class ProfileAvatar extends StatelessWidget {
         child: Stack(
           children: [
             CircleAvatar(
+              backgroundColor: AppColors.primary.withOpacity(0.2),
               radius: size / 2,
               backgroundImage: imageUrl != null && imageUrl!.isNotEmpty
                   ? NetworkImage(imageUrl!)
-                  : const AssetImage('assets/default_avatar.png') as ImageProvider,
+                  : AssetImage(imageUrl!) as ImageProvider,
             ),
             Positioned(
               bottom: 0,
@@ -42,7 +43,7 @@ class ProfileAvatar extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.text,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white,
