@@ -5,6 +5,7 @@ import '../app_text_styles.dart';
 class SettingsItem extends StatelessWidget {
   final IconData icon;
   final String title;
+  final String subTitle;
   final Widget? trailing;
   final VoidCallback? onTap;
   final bool showDivider;
@@ -19,6 +20,7 @@ class SettingsItem extends StatelessWidget {
     Key? key,
     required this.icon,
     required this.title,
+    required this.subTitle,
     this.trailing,
     this.onTap,
     this.showDivider = true,
@@ -63,13 +65,27 @@ class SettingsItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Text(
-                      title,
-                      style: titleStyle ??
-                          AppTextStyles.bodyLarge.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.text,
-                          ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: titleStyle ??
+                              AppTextStyles.bodyLarge.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.text,
+                              ),
+                        ),
+                        Text(
+                          subTitle,
+                          style: titleStyle ??
+                              AppTextStyles.bodyLarge.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.textLight,
+                                fontSize: 13,
+                              ),
+                        ),
+                      ],
                     ),
                   ),
                   if (trailing != null)

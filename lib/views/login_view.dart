@@ -81,6 +81,7 @@ class LoginView extends StatelessWidget {
                     hint: 'seu@email.com',
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, insira seu email';
@@ -99,6 +100,17 @@ class LoginView extends StatelessWidget {
                     hint: '••••••••',
                     icon: Icons.lock_outline,
                     isObscure: true,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: _authController.isLoading.value
+                        ? null
+                        : () {
+                            if (_formKey.currentState!.validate()) {
+                              _authController.loginWithEmailAndPassword(
+                                _emailController.text.trim(),
+                                _passwordController.text.trim(),
+                              );
+                            }
+                          },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, insira sua senha';

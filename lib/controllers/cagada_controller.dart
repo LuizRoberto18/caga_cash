@@ -82,7 +82,7 @@ class CagadaController extends GetxController {
       final cagada = CagadaModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         usuarioId: Get.find<AuthController>().user.value!.uid,
-        usuarioNome: Get.find<AuthController>().user.value!.email ?? 'Usuário',
+        usuarioNome: Get.find<AuthController>().user.value!.displayName ?? 'Usuário',
         dataHora: DateTime.now(),
         duracaoMinutos: duracaoMinutos,
         peso: peso,

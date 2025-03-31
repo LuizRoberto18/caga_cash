@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../controllers/cagada_controller.dart';
 import '../core/app_colors.dart';
 import '../core/app_text_styles.dart';
@@ -72,15 +73,15 @@ class _HomeViewState extends State<HomeView> {
               children: [
                 // Saudação e resumo
                 _buildWelcomeHeader(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
 
                 // Grid de métricas
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
                   childAspectRatio: 1.1,
                   children: [
                     _buildMetricCard(
@@ -113,11 +114,9 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
 
                 // Seção de histórico recente
                 _buildRecentHistorySection(),
-                const SizedBox(height: 80), // Espaço para o FAB
               ],
             );
           }),
@@ -163,14 +162,15 @@ class _HomeViewState extends State<HomeView> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary,
-              AppColors.accent,
-            ],
-          ),
+          color: AppColors.primary,
+          // gradient: LinearGradient(
+          //   begin: Alignment.topLeft,
+          //   end: Alignment.bottomRight,
+          //   colors: [
+          //     AppColors.primary,
+          //     AppColors.accent,
+          //   ],
+          // ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -222,32 +222,36 @@ class _HomeViewState extends State<HomeView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Histórico Recente',
-              style: AppTextStyles.titleSmall.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            TextButton(
-              onPressed: () => Get.toNamed('/historico'),
-              child: Text(
-                'Ver Todos',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.primary,
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Histórico Recente',
+                style: AppTextStyles.titleSmall.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
-          ],
+              TextButton(
+                onPressed: () => Get.toNamed('/historico'),
+                child: Text(
+                  'Ver Todos',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 12),
         ..._cagadaController.cagadas.take(3).map((cagada) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 8),
               child: Card(
                 elevation: 0,
+                color: AppColors.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -255,17 +259,17 @@ class _HomeViewState extends State<HomeView> {
                   borderRadius: BorderRadius.circular(12),
                   onTap: () => Get.toNamed('/detalhe_cagada', arguments: cagada),
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColors.primary,
-                          AppColors.accent,
-                        ],
-                      ),
-                    ),
+                    // decoration: BoxDecoration(
+                    //   borderRadius: BorderRadius.circular(16),
+                    //   gradient: LinearGradient(
+                    //     begin: Alignment.topLeft,
+                    //     end: Alignment.bottomRight,
+                    //     colors: [
+                    //       AppColors.primary,
+                    //       AppColors.accent,
+                    //     ],
+                    //   ),
+                    // ),
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
@@ -279,7 +283,7 @@ class _HomeViewState extends State<HomeView> {
                             cagada.entupiu
                                 ? Icons.warning_amber_rounded
                                 : Icons.check_circle_rounded,
-                            color: AppColors.primary,
+                            color: AppColors.accent,
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -295,9 +299,9 @@ class _HomeViewState extends State<HomeView> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${cagada.diaCagada}',
+                                DateFormat("dd/MM/yy HH:mm").format(cagada.diaCagada),
                                 style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.textLight,
+                                  color: AppColors.background,
                                 ),
                               ),
                             ],

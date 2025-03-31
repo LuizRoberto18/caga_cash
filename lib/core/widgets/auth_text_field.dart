@@ -11,9 +11,11 @@ class AuthTextField extends StatelessWidget {
   final bool isObscure;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final Function()? onEditingComplete;
+  final TextInputAction? textInputAction;
 
   const AuthTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
     required this.hint,
@@ -21,7 +23,9 @@ class AuthTextField extends StatelessWidget {
     this.isObscure = false,
     this.keyboardType = TextInputType.text,
     this.validator,
-  }) : super(key: key);
+    this.textInputAction,
+    this.onEditingComplete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,9 @@ class AuthTextField extends StatelessWidget {
           obscureText: isObscure,
           keyboardType: keyboardType,
           validator: validator,
+          textInputAction: textInputAction,
           style: AppTextStyles.bodyMedium,
+          onEditingComplete: onEditingComplete,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: AppTextStyles.bodyMedium.copyWith(
