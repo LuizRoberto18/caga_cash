@@ -254,7 +254,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () => Get.toNamed('/detalhe_cagada', arguments: cagada),
+                  //onTap: () => Get.toNamed('/detalhe_cagada', arguments: cagada),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     child: Row(

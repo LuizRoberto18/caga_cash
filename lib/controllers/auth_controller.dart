@@ -1,4 +1,7 @@
+import 'package:caga_cash/core/app_colors.dart';
+import 'package:caga_cash/core/widgets/snackbar_app.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -37,6 +40,7 @@ class AuthController extends GetxController {
   }
 
   // Método para login com email e senha
+// Método para login com email e senha
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     try {
       isLoading.value = true;
@@ -44,16 +48,28 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
+
+      if (userCredential.user == null) {
+        throw FirebaseAuthException(
+          code: 'user-not-found',
+          message: 'Usuário não retornado pelo Firebase',
+        );
+      }
+
       user.value = userCredential.user;
-      Get.offAllNamed('/home'); // Redireciona para a tela principal
-      isLoading.value = false;
+      Get.offAllNamed('/home');
+    } on FirebaseAuthException catch (e) {
+      _handleFirebaseAuthError(e, isLogin: true);
+    } on PlatformException catch (e) {
+      snackBarError(e.message ?? 'Erro desconhecido no login');
     } catch (e) {
-      Get.snackbar('Erro', 'Falha no login: ${e.toString()}');
+      snackBarError('Falha inesperada no login: ${e.toString()}');
+    } finally {
       isLoading.value = false;
     }
   }
 
-  // Método para registro com email e senha
+// Método para registro com email e senha
   Future<void> registerWithEmailAndPassword(String email, String password) async {
     try {
       isLoading.value = true;
@@ -61,32 +77,133 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
+
+      if (userCredential.user == null) {
+        throw FirebaseAuthException(
+          code: 'user-creation-failed',
+          message: 'Falha ao criar usuário',
+        );
+      }
+
       user.value = userCredential.user;
-      Get.offAllNamed('/home'); // Redireciona para a tela principal
-      isLoading.value = false;
+      Get.offAllNamed('/home');
+    } on FirebaseAuthException catch (e) {
+      _handleFirebaseAuthError(e, isLogin: false);
+    } on PlatformException catch (e) {
+      snackBarError(
+        e.message ?? 'Erro desconhecido no cadastro',
+      );
     } catch (e) {
-      Get.snackbar('Erro', 'Falha no cadastro: ${e.toString()}');
+      snackBarError(
+        'Falha inesperada no cadastro: ${e.toString()}',
+      );
+    } finally {
       isLoading.value = false;
     }
+  }
+
+// Tratamento centralizado de erros de autenticação
+  void _handleFirebaseAuthError(FirebaseAuthException e, {required bool isLogin}) {
+    String title = isLogin ? 'Erro no login' : 'Erro no cadastro';
+    String message;
+
+    switch (e.code) {
+      case 'invalid-email':
+        message = 'O formato do e-mail é inválido';
+        break;
+      case 'user-disabled':
+        message = 'Esta conta foi desativada';
+        break;
+      case 'user-not-found':
+        message = 'Nenhuma conta encontrada para este e-mail';
+        break;
+      case 'wrong-password':
+        message = 'Senha incorreta';
+        break;
+      case 'email-already-in-use':
+        message = 'Este e-mail já está em uso por outra conta';
+        break;
+      case 'operation-not-allowed':
+        message = 'Login com email/senha não está habilitado';
+        break;
+      case 'weak-password':
+        message = 'A senha é muito fraca (mínimo 6 caracteres)';
+        break;
+      case 'too-many-requests':
+        message = 'Muitas tentativas. Tente novamente mais tarde';
+        break;
+      case 'network-request-failed':
+        message = 'Falha na conexão. Verifique sua internet';
+        break;
+      default:
+        message = 'Erro desconhecido: ${e.message ?? e.code}';
+    }
+
+    snackBarError(message);
   }
 
   // Método para login com Google
   Future<void> loginWithGoogle() async {
     try {
+      // Força a desconexão de qualquer sessão anterior
+      await _googleSignIn.signOut();
+
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        final UserCredential userCredential = await _auth.signInWithCredential(credential);
-        user.value = userCredential.user;
-        Get.offAllNamed('/home'); // Redireciona para a tela principal
+
+      if (googleUser == null) {
+        // Usuário cancelou o login
+        return;
       }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+      if (userCredential.user == null) {
+        throw Exception("Usuário não retornado pelo Firebase");
+      }
+
+      user.value = userCredential.user;
+      Get.offAllNamed('/home');
+    } on FirebaseAuthException catch (e) {
+      _handleFirebaseError(e);
+    } on PlatformException catch (e) {
+      snackBarError(e.message ?? 'Erro desconhecido no login com Google');
     } catch (e) {
-      Get.snackbar('Erro', 'Falha no login com Google: ${e.toString()}');
+      snackBarError('Falha no login: ${e.toString()}');
     }
+  }
+
+  void _handleFirebaseError(FirebaseAuthException e) {
+    String message;
+
+    switch (e.code) {
+      case 'account-exists-with-different-credential':
+        message = 'Já existe uma conta com este e-mail';
+        break;
+      case 'invalid-credential':
+        message = 'Credencial inválida';
+        break;
+      case 'operation-not-allowed':
+        message = 'Login com Google não habilitado';
+        break;
+      case 'user-disabled':
+        message = 'Usuário desativado';
+        break;
+      case 'user-not-found':
+        message = 'Usuário não encontrado';
+        break;
+      default:
+        message = 'Erro desconhecido: ${e.code}';
+    }
+
+    snackBarError( message
+        );
   }
 
   // Método para logout
@@ -105,7 +222,7 @@ class AuthController extends GetxController {
       // 4. Redirecione limpando toda a pilha de navegação
       Get.offAllNamed('/');
     } catch (e) {
-      Get.snackbar('Erro', 'Falha no logout: ${e.toString()}');
+      snackBarError( 'Falha no logout: ${e.toString()}');
     }
   }
 

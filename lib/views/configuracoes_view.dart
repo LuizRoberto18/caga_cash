@@ -1,3 +1,4 @@
+import 'package:caga_cash/core/widgets/snackbar_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
@@ -449,15 +450,7 @@ class ConfiguracoesView extends StatelessWidget {
 
   void _saveAllSettings() {
     controller.atualizarNome();
-    Get.snackbar(
-      'Sucesso',
-      'Configurações salvas com sucesso',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success.withOpacity(0.9),
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(16),
-      borderRadius: 12,
-    );
+    snackBarSuccess('Configurações salvas com sucesso');
   }
 
   void _showChangePasswordDialog() {

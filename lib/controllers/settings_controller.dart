@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:caga_cash/core/widgets/snackbar_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,9 @@ class SettingsController extends GetxController {
       carregando.value = true;
       await _auth.currentUser?.updateDisplayName(nomeController.text);
       nomeUsuario.value = nomeController.text;
-      Get.snackbar('Sucesso', 'Nome atualizado com sucesso');
+      snackBarSuccess( 'Nome atualizado com sucesso');
     } catch (e) {
-      Get.snackbar('Erro', 'Falha ao atualizar nome: ${e.toString()}');
+      snackBarError( 'Falha ao atualizar nome: ${e.toString()}');
     } finally {
       carregando.value = false;
     }
@@ -69,10 +70,10 @@ class SettingsController extends GetxController {
         await user?.updatePhotoURL(url);
         fotoPerfilUrl.value = url;
 
-        Get.snackbar('Sucesso', 'Foto de perfil atualizada');
+        snackBarSuccess('Foto de perfil atualizada');
       }
     } catch (e) {
-      Get.snackbar('Erro', 'Falha ao atualizar foto: ${e.toString()}');
+      snackBarError( 'Falha ao atualizar foto: ${e.toString()}');
     } finally {
       carregando.value = false;
     }
@@ -80,7 +81,7 @@ class SettingsController extends GetxController {
 
   Future<void> alterarSenha() async {
     if (novaSenhaController.text != confirmarSenhaController.text) {
-      Get.snackbar('Erro', 'As senhas não coincidem');
+      snackBarError( 'As senhas não coincidem');
       return;
     }
 
@@ -95,14 +96,14 @@ class SettingsController extends GetxController {
       await user?.reauthenticateWithCredential(cred);
       await user?.updatePassword(novaSenhaController.text);
 
-      Get.snackbar('Sucesso', 'Senha alterada com sucesso');
+      snackBarSuccess('Senha alterada com sucesso');
       senhaAtualController.clear();
       novaSenhaController.clear();
       confirmarSenhaController.clear();
     } on FirebaseAuthException catch (e) {
-      Get.snackbar('Erro', 'Falha ao alterar senha: ${e.message}');
+      snackBarError( 'Falha ao alterar senha: ${e.message}');
     } catch (e) {
-      Get.snackbar('Erro', 'Erro inesperado: ${e.toString()}');
+      snackBarError( 'Erro inesperado: ${e.toString()}');
     } finally {
       carregando.value = false;
     }
@@ -111,6 +112,6 @@ class SettingsController extends GetxController {
   Future<void> salvarPreferencias(double salario) async {
     salarioPorHora.value = salario;
     // Adicione aqui a lógica para salvar no Firestore se necessário
-    Get.snackbar('Sucesso', 'Preferências salvas');
+    snackBarSuccess( 'Preferências salvas');
   }
 }

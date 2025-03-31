@@ -32,6 +32,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
+        //appAuthRedirectScheme = "com.luiz.caga_cash"
     }
 
     buildTypes {

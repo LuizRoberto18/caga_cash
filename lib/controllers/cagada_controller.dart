@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:caga_cash/core/widgets/snackbar_app.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart'; // Adicione esta linha
 
@@ -113,7 +114,7 @@ class CagadaController extends GetxController {
       };
     } catch (e) {
       print("Erro completo no registro: $e");
-      Get.snackbar('Erro', 'Falha ao registrar cagada: ${e.toString()}');
+      snackBarError('Falha ao registrar cagada: ${e.toString()}');
       rethrow;
     }
   }
@@ -136,7 +137,7 @@ class CagadaController extends GetxController {
       print(cagadas);
       print("Buscando histórico de cagadas");
     } catch (e) {
-      Get.snackbar('Erro', 'Falha ao buscar histórico: ${e.toString()}');
+      snackBarError('Falha ao buscar histórico: ${e.toString()}');
     }
   }
 

@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:caga_cash/core/widgets/snackbar_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -298,12 +299,7 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
     if (_formKey.currentState!.validate()) {
       final duracaoMinutos = _calcularDuracao();
       if (duracaoMinutos <= 0) {
-        Get.snackbar(
-          'Atenção',
-          'A hora de fim deve ser maior que a hora de início',
-          backgroundColor: AppColors.error.withOpacity(0.9),
-          colorText: Colors.white,
-        );
+        snackBarWarning('A hora de fim deve ser maior que a hora de início');
         return;
       }
 
@@ -341,12 +337,7 @@ class _NovaCagadaViewState extends State<NovaCagadaView> {
         _exibirResumo(resumo);
       } catch (e) {
         Get.back(); // Fecha o loading em caso de erro
-        Get.snackbar(
-          'Erro',
-          'Falha ao registrar cagada: ${e.toString()}',
-          backgroundColor: AppColors.error.withOpacity(0.9),
-          colorText: Colors.white,
-        );
+        snackBarError('Falha ao registrar cagada: ${e.toString()}');
       }
     }
   }
